@@ -4,18 +4,21 @@
 * server.js acts as the entry point for the accessmap backend.
 */
 import express from "express"
+import session from "express-session";
 import cors from "cors"
-import router from "./api/route"
-import initKeycloak from "./keycloak/keycloak-config";
+import initKeycloak from "./keycloak-config";
 import 'dotenv/config'
 
 const app = express();
 const url = "/api/v1/";
 const port = 3000;
+const kc = initKeycloak(app, session)
 
-app.use(initKeycloak().middleware())
-app.use(cors()); // middleware
+app.use(kc.middleware()) // keycloak middleware
+app.use(cors()); // CORS middleware
 app.use(express.json()); // Express server parsing JSON
+
+import router from "./api/route"
 app.use(url, router)
 
 // Handle 404 Not Found pages

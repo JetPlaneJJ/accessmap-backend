@@ -2,25 +2,34 @@
 import express from "express";
 import db from "./users.controller";
 
-const router = express.Router();
+import { getKeycloak } from "../keycloak-config";
 
+const router = express.Router();
+const keycloak = getKeycloak();
+
+//--------------------------------------------------------------------------------
+// TESTING PURPOSES ONLY
 router.get('/', (_req, res) => {
-    res.json({ info: 'Node.js, Express, and Postgres API' })
+    res.json({ info: 'Test Accessmap backend' })
 })
-router.get('/anonymous', (_req, res) => {
+router.get('/anonymous', (_req, res) => { // test w/out auth or tokens
     res.send("Hello Anonymous");
 });
-router.get('/user', (_req, res) =>{
+router.get('/user', keycloak.protect('user'), (_req, res) => { 
     res.send("Hello User");
 });
-router.get('/admin', (_req, res) =>{
+router.get('/admin', keycloak.protect('admin'), (_req, res) => {
     res.send("Hello Admin");
 });
+router.get('/all-user', keycloak.protect(['user','admin']), (_req, res) => {
+    res.send("Hello Admin");
+});
+//--------------------------------------------------------------------------------
 
-router.get('/users', db.getUsers)
-router.get('/users/:id', db.getUserById)
-router.post('/users', db.createUser)
-router.put('/users/:id', db.updateUser)
-router.delete('/users/:id', db.deleteUser)
+router.get('/users', keycloak.protect(['admin']), db.getUsers)
+router.get('/users/:id', keycloak.protect(['user','admin']), db.getUserById)
+router.post('/users', keycloak.protect(['user','admin']), db.createUser)
+router.put('/users/:id', keycloak.protect(['user','admin']), db.updateUser)
+router.delete('/users/:id', keycloak.protect(['user','admin']), db.deleteUser)
 
 export default router;
