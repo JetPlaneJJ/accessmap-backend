@@ -11,7 +11,7 @@ import 'dotenv/config'
 
 const app = express();
 const url = "/api/v1/";
-const port = 3000;
+const port = process.env.PORT || 3000;
 const kc = initKeycloak(app, session)
 
 app.use(kc.middleware()) // keycloak middleware
