@@ -18,13 +18,8 @@ app.use(kc.middleware()) // keycloak middleware
 app.use(cors()); // CORS middleware
 app.use(express.json()); // Express server parsing JSON
 
-import router from "./api/route"
+import router from "./api/route";
 app.use(url, router)
-
-// Handle 404 Not Found pages
-app.use("*", (_req, res) => res.status(404).json({
-    error: "Not Found"
-})); 
 app.listen(port, () => {
   console.log(`App running on port ${port}.`)
 })

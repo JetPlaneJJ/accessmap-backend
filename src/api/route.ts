@@ -26,10 +26,13 @@ router.get('/all-user', keycloak.protect(['user','admin']), (_req, res) => {
 });
 //--------------------------------------------------------------------------------
 
-router.get('/users', keycloak.protect(['admin']), db.getUsers)
+router.get('/users', db.getUsers)
 router.get('/users/:id', keycloak.protect(['user','admin']), db.getUserById)
 router.post('/users', keycloak.protect(['user','admin']), db.createUser)
 router.put('/users/:id', keycloak.protect(['user','admin']), db.updateUser)
 router.delete('/users/:id', keycloak.protect(['user','admin']), db.deleteUser)
+router.get("*", (_req, res) => { 
+    res.status(404).json({ error: "Not Found" })
+});
 
-export default router;
+export default router
