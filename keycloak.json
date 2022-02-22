@@ -1,0 +1,8 @@
+{
+  "realm": "accessmap",
+  "bearer-only": true,
+  "auth-server-url": "https://identity.opensidewalks.com/auth/",
+  "ssl-required": "external",
+  "resource": "accessmap-backend",
+  "confidential-port": 0
+}
