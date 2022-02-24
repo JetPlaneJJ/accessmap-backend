@@ -16,7 +16,7 @@ router.get('/anonymous', (_req, res) => { // test w/out auth or tokens
     res.send("Hello Anonymous");
 });
 router.get('/user', keycloak.protect('user'), (_req, res) => { 
-    res.send("Hello User");
+    res.send("Hello User"); // res.keycloak.user for extra details
 });
 router.get('/admin', keycloak.protect('admin'), (_req, res) => {
     res.send("Hello Admin");
@@ -25,7 +25,7 @@ router.get('/all-user', keycloak.protect(['user','admin']), (_req, res) => {
     res.send("Hello Admin");
 });
 //--------------------------------------------------------------------------------
-
+// keycloak will check/parse the token for you (user-specific)
 router.get('/users', db.getUsers)
 router.get('/users/:id', keycloak.protect(['user','admin']), db.getUserById)
 router.post('/users', keycloak.protect(['user','admin']), db.createUser)

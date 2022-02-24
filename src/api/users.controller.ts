@@ -28,8 +28,10 @@ export default class UsersController {
   };
 
   // Returns a single user by their given unique ID
-  static getUserById = async (req, res) => {
-    const id = parseInt(req.params.id);
+  static getUserById = async (req, res) => { 
+    const id = parseInt(req.params.id); 
+    // TODO: check here if user is actually user
+    // Get token here to extract user field (check either req or res)
     pool.query("SELECT * FROM users WHERE id = $1", [id], (error, results) => {
       if (error) {
         res.status(400).json({ error });
@@ -42,10 +44,13 @@ export default class UsersController {
   // name [string], email [string], uphill_max [int], downhill_max [int],
   // avoid_curbs [bool]
   static createUser = async (req, res) => {
+    // TODO: get user from token in req or res
+    // 1) enforce uniqueness constraint of user id column 
+    // 2) (SELECT ... WHERE)
     try {
       const { name, email, uphill_max, downhill_max, avoid_curbs } = req.body;
-      pool.query(
-        "INSERT INTO users " +
+      pool.query( // TODO: don't hardcode attributes
+        "INSERT INTO users " + 
           "(name, email, uphill_max, downhill_max, avoid_curbs) " +
           "VALUES ($1, $2, $3, $4, $5)",
         [name, email, uphill_max, downhill_max, avoid_curbs],

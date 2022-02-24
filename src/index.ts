@@ -21,7 +21,7 @@ app.use(express.json()); // Express server parsing JSON
 import router from "./api/route";
 app.use(url, router)
 app.listen(port, () => {
-  console.log(`App running on port ${port}.`)
+  console.log(`App running at http://localhost:${port}${url}`)
 })
 
 export default app;
