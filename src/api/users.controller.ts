@@ -1,15 +1,19 @@
 // Users Controller defines the responses to HTTP requests
 // interacting with the profiles/user postgres database.
 
-import { Pool } from "pg";
+import { Pool, Client } from "pg";
 
-const pool = new Pool({
+const pool = new Pool({ // local 
   // Postgres Wrapper configuration
-  user: process.env.POSTGRES_USER,
-  host: "localhost",
-  database: "profiles",
-  password: process.env.POSTGRES_PASSWORD,
-  port: 5432,
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  },
+  // user: process.env.POSTGRES_USER,
+  // host: "localhost",
+  // database: "profiles",
+  // password: process.env.POSTGRES_PASSWORD,
+  // port: 5432,
 });
 
 export default class UsersController {
