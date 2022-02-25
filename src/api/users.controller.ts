@@ -1,8 +1,9 @@
 // Users Controller defines the responses to HTTP requests
 // interacting with the profiles/user postgres database.
 
-import { Pool, Client } from "pg";
+import { Pool } from "pg";
 
+const table_name = "profile";
 const pool = new Pool({ // local 
   // Postgres Wrapper configuration
   connectionString: process.env.DATABASE_URL,
@@ -20,11 +21,13 @@ export default class UsersController {
   // Returns a list of all users
   static getUsers = async (_req, res) => {
     try {
-      pool.query("SELECT * FROM users ORDER BY id ASC", (error, results) => {
+      pool.query("SELECT * FROM " + table_name + " ORDER BY user_id ASC",
+      (error, results) => {
         if (error) {
           res.status(400).json({ error });
+        } else if (results) {
+          res.status(200).json(results.rows);
         }
-        res.status(200).json(results.rows);
       });
     } catch (e) {
       res.status(500).json({ e });
@@ -36,11 +39,13 @@ export default class UsersController {
     const id = parseInt(req.params.id); 
     // TODO: check here if user is actually user
     // Get token here to extract user field (check either req or res)
-    pool.query("SELECT * FROM users WHERE id = $1", [id], (error, results) => {
+    pool.query("SELECT * FROM " + table_name + " WHERE user_id = $1", [id],
+    (error, results) => {
       if (error) {
         res.status(400).json({ error });
+      } else if (results) {
+        res.status(200).json(results.rows);
       }
-      res.status(200).json(results.rows);
     });
   };
 
@@ -49,20 +54,18 @@ export default class UsersController {
   // avoid_curbs [bool]
   static createUser = async (req, res) => {
     // TODO: get user from token in req or res
-    // 1) enforce uniqueness constraint of user id column 
-    // 2) (SELECT ... WHERE)
     try {
-      const { name, email, uphill_max, downhill_max, avoid_curbs } = req.body;
+      // user_id uphill_max downhill_max avoid_curbs
+      const { user_id, uphill_max,  downhill_max, avoid_curbs } = req.body;
       pool.query( // TODO: don't hardcode attributes
-        "INSERT INTO users " + 
-          "(name, email, uphill_max, downhill_max, avoid_curbs) " +
-          "VALUES ($1, $2, $3, $4, $5)",
-        [name, email, uphill_max, downhill_max, avoid_curbs],
-        (error, _results) => {
+        "INSERT INTO " + table_name + " VALUES ($1, $2, $3, $4)",
+        [user_id, uphill_max,  downhill_max, avoid_curbs],
+        (error, results) => {
           if (error) {
             res.status(400).json({ error });
+          } else {
+            res.status(201).send(`User added with id ${user_id}, ${results.rows}`);
           }
-          res.status(201).send(`User ${name} added with ID: ${res.insertId}`);
         }
       );
     } catch (e) {
@@ -75,19 +78,19 @@ export default class UsersController {
   // avoid_curbs [bool]
   static updateUser = async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
-      const { name, email, uphill_max, downhill_max, avoid_curbs } = req.body;
+      const id = req.params.id;
+      const { uphill_max,  downhill_max, avoid_curbs } = req.body;
 
       pool.query(
-        "UPDATE users SET name = $1, email = $2, " +
-          "uphill_max = $3, downhill_max = $4, avoid_curbs = $5" +
-          " WHERE id = $3",
-        [name, email, uphill_max, downhill_max, avoid_curbs],
-        (error, _results) => {
+        "UPDATE " + table_name + " SET uphill_max=$1, downhill_max=$2, " + 
+         " avoid_curbs=$3 WHERE user_id=$4",
+        [uphill_max, downhill_max, avoid_curbs, id],
+        (error, results) => {
           if (error) {
             res.status(400).json({ error });
+          } else {
+            res.status(200).send(`${results.rows}`);
           }
-          res.status(200).send(`User modified with ID: ${id}`);
         }
       );
     } catch (e) {
@@ -98,12 +101,14 @@ export default class UsersController {
   // Deletes a single user given their unique ID.
   static deleteUser = async (req, res) => {
     try {
-      const id = parseInt(req.params.id);
-      pool.query("DELETE FROM users WHERE id = $1", [id], (error, _results) => {
+      const id = req.params.id;
+      pool.query("DELETE FROM " + table_name + " WHERE user_id = $1", [id],
+      (error, _results) => {
         if (error) {
           res.status(400).json({ error });
+        } else {
+          res.status(200).send(`User deleted with ID: ${id}`);
         }
-        res.status(200).send(`User deleted with ID: ${id}`);
       });
     } catch (e) {
       res.status(500).json({ e });
