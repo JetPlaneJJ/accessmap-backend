@@ -24,7 +24,8 @@ export default class UsersController {
       pool.query("SELECT * FROM " + table_name + " ORDER BY user_id ASC",
       (error, results) => {
         if (error) {
-          res.status(400).json({ error });
+          const msg = error.message;
+          res.status(400).json({ msg });
         } else if (results) {
           res.status(200).json(results.rows);
         }
@@ -42,7 +43,8 @@ export default class UsersController {
     pool.query("SELECT * FROM " + table_name + " WHERE user_id = $1", [id],
     (error, results) => {
       if (error) {
-        res.status(400).json({ error });
+        const msg = error.message;
+        res.status(400).json({ msg });
       } else if (results) {
         res.status(200).json(results.rows);
       }
@@ -62,7 +64,8 @@ export default class UsersController {
         [user_id, uphill_max,  downhill_max, avoid_curbs],
         (error, results) => {
           if (error) {
-            res.status(400).json({ error });
+            const msg = error.message;
+            res.status(400).json({ msg });
           } else {
             res.status(201).send(`User added with id ${user_id}, ${results.rows}`);
           }
@@ -87,7 +90,8 @@ export default class UsersController {
         [uphill_max, downhill_max, avoid_curbs, id],
         (error, results) => {
           if (error) {
-            res.status(400).json({ error });
+            const msg = error.message;
+            res.status(400).json({ msg });
           } else {
             res.status(200).send(`${results.rows}`);
           }
@@ -105,7 +109,8 @@ export default class UsersController {
       pool.query("DELETE FROM " + table_name + " WHERE user_id = $1", [id],
       (error, _results) => {
         if (error) {
-          res.status(400).json({ error });
+          const msg = error.message;
+          res.status(400).json({ msg });
         } else {
           res.status(200).send(`User deleted with ID: ${id}`);
         }
