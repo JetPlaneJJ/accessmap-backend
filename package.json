@@ -4,7 +4,7 @@
   "description": "Server for AccessMap",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node ./src/index.ts",
+    "start": "ts-node ./src/index.ts"
   },
   "engines": {
     "node": "14.x"
