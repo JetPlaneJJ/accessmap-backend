@@ -2,6 +2,7 @@
 * Name: Jay Lin
 * Last Updated: 02/10/2022
 * server.js acts as the entry point for the accessmap backend.
+* Usage: run 'npm start' to run the server.
 */
 import express from "express"
 import session from "express-session";

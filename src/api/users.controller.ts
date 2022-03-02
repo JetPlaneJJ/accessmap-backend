@@ -1,5 +1,5 @@
 // Users Controller defines the responses to HTTP requests
-// interacting with the profiles/user postgres database.
+// interacting with the postgres database.
 
 import { Pool } from "pg";
 
@@ -10,7 +10,7 @@ const pool = new Pool({ // local
   ssl: {
     rejectUnauthorized: false
   },
-  // user: process.env.POSTGRES_USER,
+  // user: process.env.POSTGRES_USER, // for debug mode only
   // host: "localhost",
   // database: "profiles",
   // password: process.env.POSTGRES_PASSWORD,
@@ -52,15 +52,15 @@ export default class UsersController {
   };
 
   // Creates a single user with required parameters:
-  // name [string], email [string], uphill_max [int], downhill_max [int],
   // avoid_curbs [bool]
   static createUser = async (req, res) => {
-    // TODO: get user from token in req or res
     try {
-      // user_id uphill_max downhill_max avoid_curbs
       const { user_id, uphill_max,  downhill_max, avoid_curbs } = req.body;
       pool.query( // TODO: don't hardcode attributes
-        "INSERT INTO " + table_name + " VALUES ($1, $2, $3, $4)",
+        "INSERT INTO " + table_name + " VALUES ($1, $2, $3, $4)" + 
+        " ON CONFLICT ON CONSTRAINT user_id " + 
+        " DO UPDATE " + table_name + " SET uphill_max=$1, downhill_max=$2, " + 
+         " avoid_curbs=$3 WHERE user_id=$4",
         [user_id, uphill_max,  downhill_max, avoid_curbs],
         (error, results) => {
           if (error) {
@@ -77,7 +77,6 @@ export default class UsersController {
   };
 
   // Updates a single user with required parameters:
-  // name [string], email [string], uphill_max [int], downhill_max [int],
   // avoid_curbs [bool]
   static updateUser = async (req, res) => {
     try {
