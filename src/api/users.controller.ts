@@ -57,17 +57,17 @@ export default class UsersController {
     try {
       const { user_id, uphill_max,  downhill_max, avoid_curbs } = req.body;
       pool.query( // TODO: don't hardcode attributes
-        "INSERT INTO " + table_name + " VALUES ($1, $2, $3, $4)" + 
-        " ON CONFLICT ON CONSTRAINT user_id " + 
-        " DO UPDATE SET uphill_max=$1, downhill_max=$2, " + 
-         " avoid_curbs=$3 WHERE user_id=$4",
+        "INSERT INTO " + table_name + " (user_id, uphill_max,  downhill_max, avoid_curbs) " + 
+        " VALUES ($1, $2, $3, $4) ON CONFLICT (user_id) DO UPDATE" + 
+        " SET uphill_max=$2, downhill_max=$3, " + 
+         " avoid_curbs=$4 WHERE " + table_name + ".user_id=$1",
         [user_id, uphill_max,  downhill_max, avoid_curbs],
         (error, results) => {
           if (error) {
             const msg = error.message;
             res.status(400).json({ msg });
           } else {
-            res.status(201).send(`User added with id ${user_id}, ${results.rows}`);
+            res.status(201).send(`User upserted with id ${user_id}, ${results.rows}`);
           }
         }
       );
