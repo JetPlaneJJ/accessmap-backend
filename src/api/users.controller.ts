@@ -59,7 +59,7 @@ export default class UsersController {
       pool.query( // TODO: don't hardcode attributes
         "INSERT INTO " + table_name + " VALUES ($1, $2, $3, $4)" + 
         " ON CONFLICT ON CONSTRAINT user_id " + 
-        " DO UPDATE " + table_name + " SET uphill_max=$1, downhill_max=$2, " + 
+        " DO UPDATE SET uphill_max=$1, downhill_max=$2, " + 
          " avoid_curbs=$3 WHERE user_id=$4",
         [user_id, uphill_max,  downhill_max, avoid_curbs],
         (error, results) => {
