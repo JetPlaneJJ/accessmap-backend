@@ -37,18 +37,22 @@ export default class UsersController {
 
   // Returns a single user by their given unique ID
   static getUserById = async (req, res) => { 
-    const id = parseInt(req.params.id); 
+    const id = req.params.id;
     // TODO: check here if user is actually user
     // Get token here to extract user field (check either req or res)
-    pool.query("SELECT * FROM " + table_name + " WHERE user_id = $1", [id],
-    (error, results) => {
-      if (error) {
-        const msg = error.message;
-        res.status(400).json({ msg });
-      } else if (results) {
-        res.status(200).json(results.rows);
-      }
-    });
+    try {
+      pool.query("SELECT * FROM " + table_name + " WHERE user_id = $1", [id],
+      (error, results) => {
+        if (error) {
+          const msg = error.message;
+          res.status(400).json({ msg });
+        } else if (results) {
+          res.status(200).json(results.rows[0]);
+        }
+      });
+    } catch (e) {
+      res.status(500).json({ e });
+    }
   };
 
   // Creates a single user with required parameters:
