@@ -25,7 +25,7 @@ export default class UsersController {
       (error, results) => {
         if (error) {
           const msg = error.message;
-          res.status(400).json({ msg });
+          res.status(400).json({ error: msg });
         } else if (results) {
           res.status(200).json(results.rows);
         }
@@ -45,7 +45,7 @@ export default class UsersController {
       (error, results) => {
         if (error) {
           const msg = error.message;
-          res.status(400).json({ msg });
+          res.status(400).json({ error: msg });
         } else if (results) {
           res.status(200).json(results.rows[0]);
         }
@@ -70,7 +70,7 @@ export default class UsersController {
         (error, results) => {
           if (error) {
             const msg = error.message;
-            res.status(400).json({ msg });
+            res.status(400).json({ error: msg });
           } else {
             res.status(201).send(`User upserted with id ${user_id}, ${results.rows}`);
           }
@@ -95,7 +95,7 @@ export default class UsersController {
         (error, results) => {
           if (error) {
             const msg = error.message;
-            res.status(400).json({ msg });
+            res.status(400).json({ error: msg });
           } else {
             res.status(200).send(`${results.rows}`);
           }
@@ -115,7 +115,7 @@ export default class UsersController {
       (error, _results) => {
         if (error) {
           const msg = error.message;
-          res.status(400).json({ msg });
+          res.status(400).json({ error: msg });
         } else {
           res.status(200).send(`User deleted with ID: ${id}`);
         }

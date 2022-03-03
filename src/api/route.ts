@@ -26,11 +26,11 @@ router.get('/all-user', keycloak.protect(['user','admin']), (_req, res) => {
 });
 //--------------------------------------------------------------------------------
 // keycloak will check/parse the token for you (user-specific)
-router.get('/users', db.getUsers)
-router.get('/users/:id', db.getUserById)
-router.post('/users', db.createUser)
-router.put('/users/:id', db.updateUser)
-router.delete('/users/:id', keycloak.protect(['admin','user']), db.deleteUser)
+router.get('/users', keycloak.protect(), db.getUsers)
+router.get('/users/:id', keycloak.protect(), db.getUserById)
+router.post('/users', keycloak.protect(), db.createUser)
+router.put('/users/:id', keycloak.protect(), db.updateUser)
+router.delete('/users/:id', keycloak.protect(), db.deleteUser)
 router.get("*", (_req, res) => { 
     res.status(404).json({ error: "Not Found" })
 });
