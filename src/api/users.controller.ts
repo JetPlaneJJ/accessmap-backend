@@ -60,6 +60,7 @@ export default class UsersController {
   static createUser = async (req, res) => {
     try {
       const { user_id, uphill_max,  downhill_max, avoid_curbs } = req.body;
+      console.log(req)
       pool.query( // TODO: don't hardcode attributes
         "INSERT INTO " + table_name + " (user_id, uphill_max,  downhill_max, avoid_curbs) " + 
         " VALUES ($1, $2, $3, $4) ON CONFLICT (user_id) DO UPDATE" + 
@@ -108,6 +109,7 @@ export default class UsersController {
   // Deletes a single user given their unique ID.
   static deleteUser = async (req, res) => {
     try {
+      console.log(req)
       const id = req.params.id;
       pool.query("DELETE FROM " + table_name + " WHERE user_id = $1", [id],
       (error, _results) => {
