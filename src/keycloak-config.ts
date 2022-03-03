@@ -11,12 +11,6 @@ export default function initKeycloak(app: Express, session: typeof import("expre
     } else {
         console.log("Initializing Keycloak...")
         var memoryStore = new session.MemoryStore();
-        app.use(session({
-            secret: 'some secret',
-            resave: false,
-            saveUninitialized: true,
-            store: memoryStore
-        }));
         keycloak = new Keycloak({store: memoryStore});
     }
     return keycloak;
