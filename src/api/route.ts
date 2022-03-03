@@ -26,7 +26,7 @@ router.get('/all-user', keycloak.protect(['user','admin']), (_req, res) => {
 });
 //--------------------------------------------------------------------------------
 // keycloak will check/parse the token for you (user-specific)
-router.get('/users', keycloak.protect(), db.getUsers)
+router.get('/users', db.getUsers)
 router.get('/users/:id', keycloak.protect(), db.getUserById)
 router.post('/users', keycloak.protect(), db.createUser)
 router.put('/users/:id', keycloak.protect(), db.updateUser)
